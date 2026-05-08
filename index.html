@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Facebook ego network — SNAP</title>
+<title>A Facebook friendship snapshot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -98,40 +98,40 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Facebook ego network</h1>
-    <div class="sub">A snapshot from the Stanford SNAP <code>facebook_combined</code> dataset — friendships among 4,039 anonymized users.</div>
+    <h1>A Facebook friendship snapshot</h1>
+    <div class="sub">A real social network from Stanford — 4,039 anonymized people and the friendships between them.</div>
   </header>
 
   <div class="layout">
     <section class="card graph-card">
       <div class="graph-head">
-        <h2>Force-directed view — top 200 hubs</h2>
-        <div class="legend">drag · scroll to zoom</div>
+        <h2>The 200 most-connected people</h2>
+        <div class="legend">drag a dot · scroll to zoom</div>
       </div>
       <svg id="graph"></svg>
     </section>
 
     <aside>
       <section class="card" style="margin-bottom: 16px;">
-        <h2>Network at a glance</h2>
+        <h2>By the numbers</h2>
         <div class="stat-grid">
-          <div class="stat"><div class="v" id="s-nodes">—</div><div class="k">nodes</div></div>
-          <div class="stat"><div class="v" id="s-edges">—</div><div class="k">edges</div></div>
-          <div class="stat"><div class="v" id="s-avg">—</div><div class="k">avg degree</div></div>
-          <div class="stat"><div class="v" id="s-max">—</div><div class="k">max degree</div></div>
+          <div class="stat"><div class="v" id="s-nodes">—</div><div class="k">people</div></div>
+          <div class="stat"><div class="v" id="s-edges">—</div><div class="k">friendships</div></div>
+          <div class="stat"><div class="v" id="s-avg">—</div><div class="k">avg friends per person</div></div>
+          <div class="stat"><div class="v" id="s-max">—</div><div class="k">most friends</div></div>
         </div>
-        <div class="sub" style="font-size: 12px;">Stats from the full graph; the visualization shows the induced subgraph among the 200 highest-degree nodes.</div>
+        <div class="sub" style="font-size: 12px;">Numbers above describe the whole network. The picture on the left shows only the 200 most-connected people and the friendships between them.</div>
       </section>
 
       <section class="card">
-        <h2>Most-connected users</h2>
+        <h2>People with the most friends</h2>
         <ol class="top" id="top10"></ol>
       </section>
     </aside>
   </div>
 
   <footer>
-    Source: <a href="https://snap.stanford.edu/data/ego-Facebook.html">SNAP / Stanford</a> · Built live with Claude Code.
+    Data: <a href="https://snap.stanford.edu/data/ego-Facebook.html">Stanford SNAP</a> · Built live with Claude Code.
   </footer>
 </div>
 
@@ -150,7 +150,7 @@ d3.json("data.json").then(data => {
   const ol = document.getElementById("top10");
   data.stats.top10.forEach(({id, degree}) => {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="id">user ${id}</span><span class="deg">${fmt(degree)}</span>`;
+    li.innerHTML = `<span class="id">person ${id}</span><span class="deg">${fmt(degree)} friends</span>`;
     ol.appendChild(li);
   });
 
@@ -199,7 +199,7 @@ function drawGraph({nodes, links}) {
     .call(drag(sim))
     .on("mouseenter", (e, d) => {
       tip.style.opacity = 1;
-      tip.textContent = `user ${d.id} · degree ${fmt(d.degree)}`;
+      tip.textContent = `person ${d.id} · ${fmt(d.degree)} friends`;
     })
     .on("mousemove", (e) => {
       tip.style.left = (e.pageX + 12) + "px";
