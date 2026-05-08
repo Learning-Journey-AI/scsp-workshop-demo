@@ -73,7 +73,35 @@ xy /= scale  # ~99% of nodes within unit radius
 positions = {n: (float(x), float(y)) for n, (x, y) in zip(G.nodes(), xy)}
 
 top10 = sorted(degree.items(), key=lambda kv: -kv[1])[:10]
-top_bridges = sorted(bc.items(), key=lambda kv: -kv[1])[:5]
+
+
+def connected_groups(node, max_groups=3, min_share=0.05):
+    """Which friend groups does this person have meaningful ties to?
+
+    Counts a group only if at least `min_share` of the person's friendships
+    go to it (filters out a single stray contact). Returns up to
+    `max_groups` group ids ordered by share, descending.
+    """
+    group_count = Counter(node_community[nb] for nb in G.neighbors(node))
+    total = sum(group_count.values()) or 1
+    ranked = [
+        (g, c / total) for g, c in group_count.most_common()
+        if c / total >= min_share
+    ]
+    return [g for g, _ in ranked[:max_groups]]
+
+
+# Pick the top-5 bridges by betweenness that actually span 2+ friend groups —
+# otherwise the list would include high-betweenness hubs whose friendships
+# stay inside a single group, which doesn't match the "bridge" label.
+top_bridges = []
+for n, s in sorted(bc.items(), key=lambda kv: -kv[1]):
+    cg = connected_groups(n)
+    if len(cg) >= 2:
+        top_bridges.append((n, s, cg))
+        if len(top_bridges) == 5:
+            break
+
 
 nodes = []
 for n in G.nodes():
@@ -104,7 +132,10 @@ data = {
         for i in range(n_groups_shown)
     ] + ([{"id": TOP_C, "size": community_sizes.get(TOP_C, 0)}] if n_groups_other else []),
     "topFriends": [{"id": n, "deg": d} for n, d in top10],
-    "topBridges": [{"id": n, "score": round(s, 4), "deg": degree[n]} for n, s in top_bridges],
+    "topBridges": [
+        {"id": n, "score": round(s, 4), "deg": degree[n], "connects": cg}
+        for n, s, cg in top_bridges
+    ],
     "nodes": nodes,
     "edges": edges,
 }
@@ -117,4 +148,6 @@ size_kb = os.path.getsize("data.json") / 1024
 print(f"\ndata.json written: {size_kb:.0f} KB")
 print(f"  nodes={len(nodes)} edges={len(edges)}")
 print(f"  top friends: {top10[0]} … {top10[-1]}")
-print(f"  top bridges: {top_bridges[0]} … {top_bridges[-1]}")
+print(f"  top bridges (≥2 groups):")
+for n, s, cg in top_bridges:
+    print(f"    person {n}  score={s:.3f}  connects={cg}")
