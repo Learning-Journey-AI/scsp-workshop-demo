@@ -80,9 +80,21 @@
   }
 
   .legend {
-    display: flex; flex-wrap: wrap; gap: 14px;
+    display: flex; flex-wrap: wrap; gap: 8px;
     padding: 12px 18px; border-top: 1px solid var(--line);
     font-size: 13px;
+  }
+  .legend .item {
+    display: inline-flex; align-items: center;
+    padding: 3px 9px 3px 7px; border-radius: 999px;
+    border: 1px solid transparent;
+    cursor: pointer; user-select: none;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .legend .item:hover { background: var(--panel-2); }
+  .legend .item.active {
+    background: var(--panel-2);
+    border-color: var(--muted);
   }
   .legend .swatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
   .legend .item .count { color: var(--muted); margin-left: 4px; font-size: 12px; }
@@ -222,14 +234,18 @@ const fmt = d3.format(",");
   document.getElementById("insight").innerHTML =
     `The most-connected person knows <strong>${fmt(s.maxFriends)}</strong> others — about <strong>1 in ${Math.round(s.people / s.maxFriends)}</strong> of everyone in the snapshot.`;
 
-  // Legend.
+  // Legend — clickable to filter to a friend group.
   const legend = d3.select("#legend");
   data.communities.forEach(g => {
-    const item = legend.append("span").attr("class", "item");
+    const item = legend.append("span")
+      .attr("class", "item")
+      .attr("data-cid", g.id)
+      .attr("title", `Click to highlight ${g.id === 8 ? "smaller groups" : "friend group " + (g.id + 1)} only`);
     item.append("span").attr("class", "swatch").style("background", PALETTE[g.id % PALETTE.length]);
     const label = g.id === 8 ? "Smaller groups" : `Friend group ${g.id + 1}`;
     item.append("span").text(label);
     item.append("span").attr("class", "count").text(`(${fmt(g.size)})`);
+    item.on("click", () => toggleCommunity(g.id));
   });
 
   // Top lists.
@@ -300,8 +316,9 @@ const fmt = d3.format(",");
   }
 
   // Hover / selection state.
-  let hover = null;       // currently-hovered node id
-  let selected = null;    // clicked & locked node id
+  let hover = null;            // currently-hovered node id
+  let selected = null;         // clicked & locked node id
+  let activeCommunity = null;  // legend-pinned friend group id
   let highlightNeighbors = new Set();
 
   function applyHighlight(id) {
@@ -309,6 +326,16 @@ const fmt = d3.format(",");
     if (id == null) return;
     highlightNeighbors.add(id);
     for (const nb of adj.get(id) || []) highlightNeighbors.add(nb);
+  }
+
+  function toggleCommunity(cid) {
+    activeCommunity = (activeCommunity === cid) ? null : cid;
+    legend.selectAll(".item").classed("active", function() {
+      return +this.dataset.cid === activeCommunity;
+    });
+    // Community filter doesn't override a specific node selection.
+    if (selected != null) clearSelection();
+    queueDraw();
   }
 
   function project(d) {
@@ -324,29 +351,43 @@ const fmt = d3.format(",");
   function draw() {
     ctx.clearRect(0, 0, cssW, cssH);
 
-    const dim = highlightNeighbors.size > 0;
+    const nodeDim = highlightNeighbors.size > 0;
+    const commDim = activeCommunity != null;
+    const dim = nodeDim || commDim;
+
+    // Decide which nodes/edges are "lit" based on active filter.
+    function isLit(n) {
+      if (nodeDim) return highlightNeighbors.has(n.id);
+      if (commDim) return n.c === activeCommunity;
+      return true;
+    }
+    function edgeLit(a, b) {
+      if (nodeDim) return highlightNeighbors.has(a.id) || highlightNeighbors.has(b.id);
+      if (commDim) return a.c === activeCommunity && b.c === activeCommunity;
+      return true;
+    }
 
     // Draw edges. With 88k edges we batch by alpha to limit state changes.
     const t = view.k;
     if (dim) {
-      // Faint pass: edges not touching the highlight.
+      // Faint pass: dimmed edges.
       ctx.strokeStyle = "rgba(60, 70, 90, 0.22)";
       ctx.lineWidth = 0.4;
       ctx.beginPath();
       for (const [ia, ib] of data.edges) {
         const a = data.nodes[ia], b = data.nodes[ib];
-        if (highlightNeighbors.has(a.id) || highlightNeighbors.has(b.id)) continue;
+        if (edgeLit(a, b)) continue;
         const [x1, y1] = project(a), [x2, y2] = project(b);
         ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
       }
       ctx.stroke();
-      // Bright pass: highlight edges.
-      ctx.strokeStyle = "rgba(255, 184, 107, 0.85)";
+      // Bright pass: highlighted edges.
+      ctx.strokeStyle = nodeDim ? "rgba(255, 184, 107, 0.85)" : "rgba(180, 200, 230, 0.55)";
       ctx.lineWidth = 0.9;
       ctx.beginPath();
       for (const [ia, ib] of data.edges) {
         const a = data.nodes[ia], b = data.nodes[ib];
-        if (!(highlightNeighbors.has(a.id) || highlightNeighbors.has(b.id))) continue;
+        if (!edgeLit(a, b)) continue;
         const [x1, y1] = project(a), [x2, y2] = project(b);
         ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
       }
@@ -367,9 +408,9 @@ const fmt = d3.format(",");
     for (const n of data.nodes) {
       const [x, y] = project(n);
       const r = Math.max(0.8, radius(n) * Math.sqrt(t));
-      const inHi = highlightNeighbors.has(n.id);
+      const lit = isLit(n);
       ctx.fillStyle = dim
-        ? (inHi ? PALETTE[n.c % PALETTE.length] : "rgba(80,90,110,0.35)")
+        ? (lit ? PALETTE[n.c % PALETTE.length] : "rgba(80,90,110,0.35)")
         : PALETTE[n.c % PALETTE.length];
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -465,6 +506,7 @@ const fmt = d3.format(",");
     fit();
     d3.select(canvas).call(zoom.transform, d3.zoomIdentity);
     clearSelection();
+    if (activeCommunity != null) toggleCommunity(activeCommunity);
   });
 
   // Search.
