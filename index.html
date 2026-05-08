@@ -172,6 +172,130 @@
 
   footer { margin-top: 26px; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
   footer .biblio { font-style: italic; }
+
+  /* Section nav + section structure */
+  .section-nav {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    margin-top: 14px; font-size: 13px;
+  }
+  .section-nav a {
+    color: var(--muted); border-bottom: 1px solid transparent;
+    padding-bottom: 2px; transition: color 0.15s, border-color 0.15s;
+  }
+  .section-nav a:hover {
+    color: var(--text); border-color: var(--accent); text-decoration: none;
+  }
+  .page-section { scroll-margin-top: 24px; padding-top: 8px; }
+  .page-section + .page-section { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .section-head { margin-bottom: 18px; }
+  .section-title { font-size: 22px; font-weight: 700; margin: 0 0 6px; color: var(--text); letter-spacing: -0.01em; }
+  .section-lede { color: var(--muted); font-size: 14px; line-height: 1.55; max-width: 840px; margin: 0; }
+  .section-lede strong { color: var(--text); font-weight: 600; }
+
+  /* Ego list */
+  ol.ego-list { list-style: none; padding: 0; margin: 0; }
+  ol.ego-list li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 4px; border-bottom: 1px solid var(--line);
+    font-size: 13px; cursor: pointer;
+  }
+  ol.ego-list li:last-child { border-bottom: none; }
+  ol.ego-list li:hover { background: var(--panel-2); }
+  ol.ego-list .ego-tag {
+    display: inline-block; min-width: 38px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: #ffd86b; border: 1px solid #ffd86b50; border-radius: 999px;
+    padding: 1px 6px; text-align: center;
+  }
+  ol.ego-list .id { font-family: 'JetBrains Mono', monospace; flex: 1; }
+  ol.ego-list .v { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  ol.top li.is-ego .id::after {
+    content: " • ego";
+    color: #ffd86b; font-size: 10.5px; letter-spacing: 0.04em;
+  }
+
+  /* Section B: circles */
+  .stat-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .picker-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-top: 14px; font-size: 13px;
+  }
+  .picker-row label { color: var(--muted); }
+  .picker-row select {
+    background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 10px; font-size: 13px; font-family: inherit;
+    min-width: 280px;
+  }
+  .picker-hint { color: var(--muted); font-size: 12px; }
+
+  .circle-detail { margin-top: 16px; }
+  .circle-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .circle-name { font-size: 15px; font-weight: 600; color: var(--text); }
+  .circle-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .circle-f1 { text-align: right; }
+  .circle-f1 span { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--accent-2); }
+  .circle-f1 .k { font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .circle-bar {
+    display: flex; height: 28px; border-radius: 6px; overflow: hidden;
+    background: var(--panel-2); border: 1px solid var(--line);
+  }
+  .circle-bar .seg { display: flex; align-items: center; justify-content: center; min-width: 4px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: rgba(0,0,0,0.7); }
+  .circle-legend {
+    display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px;
+    font-size: 12px; color: var(--muted);
+  }
+  .circle-legend .item { display: inline-flex; align-items: center; gap: 5px; }
+  .circle-legend .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+
+  /* Section C: feature browser */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    padding: 6px 12px; border-radius: 999px; cursor: pointer;
+    background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--text); font-size: 13px; user-select: none;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .chip:hover { background: #131826; }
+  .chip.active { background: #1a2540; border-color: var(--accent); }
+  .chip .count { color: var(--muted); font-size: 11px; }
+
+  .fb-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--line);
+  }
+  .fb-cat { font-size: 15px; font-weight: 600; color: var(--accent); }
+  .fb-cat-summary { font-size: 12px; color: var(--muted); }
+
+  .fb-bars { display: flex; flex-direction: column; gap: 6px; }
+  .fb-bar {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px;
+  }
+  .fb-bar .label {
+    width: 280px; flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .fb-bar .track {
+    flex: 1; height: 12px; background: var(--panel-2);
+    border-radius: 3px; overflow: hidden;
+  }
+  .fb-bar .fill {
+    height: 100%; background: var(--accent);
+  }
+  .fb-bar .v {
+    width: 60px; text-align: right;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text);
+  }
+  .fb-help {
+    margin-top: 12px; font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -181,8 +305,14 @@
     <div class="lede">
       The whole friend network of <strong>10 people</strong> on Facebook, mapped together — 4,039 of their friends and the 88,234 friendships between them. Colors mark the natural friend groups the data falls into. Hover any dot to see who someone knows; type a number to find them.
     </div>
+    <nav class="section-nav" aria-label="Section navigation">
+      <a href="#overview">The whole network</a>
+      <a href="#circles">Algorithm vs. humans</a>
+      <a href="#features">What ties friend groups together</a>
+    </nav>
   </header>
 
+  <section id="overview" class="page-section">
   <div class="layout">
     <section class="card graph-card">
       <div class="graph-head">
@@ -236,8 +366,85 @@
         </div>
         <ol class="top" id="top-bridges"></ol>
       </section>
+
+      <section class="card card-pad" style="margin-top: 14px;">
+        <h2>The 10 survey participants</h2>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
+          These 10 people installed a research app and shared their friend lists. Everyone else in the network is a friend-of-a-friend. They appear with a gold ring on the map.
+        </div>
+        <ol class="ego-list" id="ego-list"></ol>
+      </section>
     </aside>
   </div>
+  </section>
+
+  <section id="circles" class="page-section">
+    <div class="section-head">
+      <h2 class="section-title">Algorithm vs. humans</h2>
+      <p class="section-lede">
+        The 10 people who participated in the study labeled <strong id="cm-total">—</strong> social circles by hand — "high-school friends," "co-workers," "family." How well does the algorithm's view of friend groups match the human view?
+      </p>
+    </div>
+
+    <div class="layout">
+      <section class="card card-pad">
+        <h2>Match summary</h2>
+        <div class="stat-grid stat-grid-3">
+          <div class="stat"><div class="v" id="cm-strong">—</div><div class="k">strong matches (F1≥0.5)</div></div>
+          <div class="stat"><div class="v" id="cm-perfect">—</div><div class="k">near-perfect (F1≥0.95)</div></div>
+          <div class="stat"><div class="v" id="cm-avg">—</div><div class="k">average F1</div></div>
+        </div>
+        <div class="insight">
+          <strong>Most circles don't match a single detected community.</strong> Why? Each person labeled circles within <em>their own</em> friends — the algorithm sees the whole 4,000-person network at once and finds different structure. Where they overlap, they really overlap. Where they don't, the human view is finer-grained.
+        </div>
+
+        <div class="picker-row">
+          <label for="circle-pick">Show a circle:</label>
+          <select id="circle-pick"></select>
+          <span id="circle-pick-hint" class="picker-hint">best matches first, worst matches at the bottom</span>
+        </div>
+
+        <div class="circle-detail" id="circle-detail">
+          <div class="circle-head">
+            <div>
+              <div class="circle-name" id="cd-name">—</div>
+              <div class="circle-meta" id="cd-meta">—</div>
+            </div>
+            <div class="circle-f1"><span id="cd-f1">—</span><div class="k">F1</div></div>
+          </div>
+          <div class="circle-bar" id="cd-bar"></div>
+          <div class="circle-legend" id="cd-legend"></div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section id="features" class="page-section">
+    <div class="section-head">
+      <h2 class="section-title">What ties friend groups together</h2>
+      <p class="section-lede">
+        Each person in the dataset has a profile (with values obscured for privacy, but the <em>kind</em> of feature preserved). Below is the network of <strong id="fb-ego-label">—</strong> — <strong id="fb-ego-friends">—</strong> friends. Pick a profile field and see which feature values group those friends together.
+      </p>
+    </div>
+
+    <div class="layout">
+      <section class="card card-pad">
+        <h2>Profile fields</h2>
+        <div class="chip-row" id="fb-chips"></div>
+
+        <div id="fb-detail" style="margin-top: 14px;">
+          <div class="fb-head">
+            <span class="fb-cat" id="fb-cat-name">—</span>
+            <span class="fb-cat-summary" id="fb-cat-summary">—</span>
+          </div>
+          <div class="fb-bars" id="fb-bars"></div>
+          <div class="fb-help" id="fb-help">
+            Each bar is a distinct value of this profile field. Bigger bars = more of <span id="fb-ego-name-inline">—</span>'s friends share that value. Names of values are anonymized; what's exposed is just <em>that</em> they're shared.
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
 
   <footer>
     <div>Source: Stanford SNAP <a href="https://snap.stanford.edu/data/ego-Facebook.html">ego-Facebook</a> dataset, from McAuley &amp; Leskovec, <span class="biblio">"Learning to Discover Social Circles in Ego Networks,"</span> NIPS 2012. Collected via a custom Facebook research app from <strong>10 survey participants</strong> who shared the friendship structure of their friend lists. All identities anonymized; the central user is excluded from each ego network.</div>
@@ -285,14 +492,31 @@ const fmt = d3.format(",");
 
   function topFriendRow(item) {
     const li = document.createElement("li");
-    const c = nodeById.get(item.id)?.c ?? 0;
+    const node = nodeById.get(item.id);
+    const c = node?.c ?? 0;
     li.dataset.id = item.id;
+    if (item.ego) li.classList.add("is-ego");
     li.innerHTML =
       `<span class="swatch" style="background:${PALETTE[c % PALETTE.length]}"></span>` +
       `<span class="id">person ${item.id}</span>` +
       `<span class="v">${fmt(item.deg)} friends</span>`;
     li.addEventListener("click", () => selectNode(item.id, true));
     return li;
+  }
+
+  // Ego list (right column, second card).
+  const egoListEl = document.getElementById("ego-list");
+  if (egoListEl && data.egos) {
+    data.egos.forEach(eg => {
+      const li = document.createElement("li");
+      li.dataset.id = eg.id;
+      li.innerHTML =
+        `<span class="ego-tag">${eg.label}</span>` +
+        `<span class="id">person ${eg.id}</span>` +
+        `<span class="v">${fmt(eg.friends)} friends · ${eg.circles} circles</span>`;
+      li.addEventListener("click", () => selectNode(eg.id, true));
+      egoListEl.appendChild(li);
+    });
   }
 
   function bridgeRow(item) {
@@ -464,7 +688,9 @@ const fmt = d3.format(",");
     // Draw nodes.
     for (const n of data.nodes) {
       const [x, y] = project(n);
-      const r = Math.max(0.8, radius(n) * Math.sqrt(t));
+      // Egos render slightly larger so the gold ring reads.
+      const baseR = radius(n) * (n.ego ? 1.6 : 1);
+      const r = Math.max(0.8, baseR * Math.sqrt(t));
       const lit = isLit(n);
       ctx.fillStyle = dim
         ? (lit ? PALETTE[n.c % PALETTE.length] : "rgba(80,90,110,0.35)")
@@ -472,7 +698,14 @@ const fmt = d3.format(",");
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
-      if (bridgeIds.has(n.id)) {
+      if (n.ego) {
+        // Gold ring marking the 10 survey participants.
+        ctx.strokeStyle = "#ffd86b";
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(x, y, r + 1.5, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (bridgeIds.has(n.id)) {
         ctx.strokeStyle = "rgba(255,255,255,0.8)";
         ctx.lineWidth = 1.2;
         ctx.stroke();
@@ -581,6 +814,122 @@ const fmt = d3.format(",");
   d3.select(canvas).call(zoom);
 
   draw();
+
+  // ── Section B: Algorithm vs. humans ─────────────────────────────────
+  const cm = data.circles;
+  if (cm) {
+    document.getElementById("cm-total").textContent = fmt(cm.summary.totalCircles);
+    document.getElementById("cm-strong").textContent = fmt(cm.summary.matchedHigh);
+    document.getElementById("cm-perfect").textContent = fmt(cm.summary.perfectMatches);
+    document.getElementById("cm-avg").textContent = cm.summary.avgF1.toFixed(2);
+
+    const picker = document.getElementById("circle-pick");
+    cm.showcase.forEach((c, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      const f1 = c.match.f1;
+      const tag = f1 >= 0.5 ? "strong match" : (f1 >= 0.2 ? "partial" : "weak match");
+      opt.textContent = `${c.egoLabel} · ${c.name} (${c.size} people, F1 ${f1.toFixed(2)} — ${tag})`;
+      picker.appendChild(opt);
+    });
+
+    function showCircle(i) {
+      const c = cm.showcase[i];
+      if (!c) return;
+      document.getElementById("cd-name").textContent = `${c.egoLabel} → ${c.name}`;
+      document.getElementById("cd-meta").textContent =
+        `${c.size} people in this hand-labeled circle · best match is friend group ${c.match.bestCommunity === 8 ? "Smaller groups" : c.match.bestCommunity + 1}` +
+        ` (${c.match.hits} of ${c.size} people are in it · precision ${c.match.precision.toFixed(2)} · recall ${c.match.recall.toFixed(2)})`;
+      document.getElementById("cd-f1").textContent = c.match.f1.toFixed(2);
+
+      // Build the bar showing how the circle's members spread across communities.
+      const dist = new Map();
+      c.members.forEach(m => {
+        const node = nodeById.get(m);
+        if (!node) return;
+        dist.set(node.c, (dist.get(node.c) || 0) + 1);
+      });
+      // Sort: best-match community first, then by descending count.
+      const ordered = Array.from(dist.entries()).sort((a, b) => {
+        if (a[0] === c.match.bestCommunity) return -1;
+        if (b[0] === c.match.bestCommunity) return 1;
+        return b[1] - a[1];
+      });
+      const total = ordered.reduce((s, [, n]) => s + n, 0) || 1;
+      const bar = document.getElementById("cd-bar");
+      bar.innerHTML = "";
+      const legend = document.getElementById("cd-legend");
+      legend.innerHTML = "";
+      ordered.forEach(([cid, n]) => {
+        const seg = document.createElement("div");
+        seg.className = "seg";
+        seg.style.width = `${(n / total) * 100}%`;
+        seg.style.background = PALETTE[cid % PALETTE.length];
+        if (n / total > 0.05) seg.textContent = String(n);
+        seg.title = `${groupLabel(cid)}: ${n} of ${total}`;
+        bar.appendChild(seg);
+
+        const li = document.createElement("span");
+        li.className = "item";
+        li.innerHTML =
+          `<span class="swatch" style="background:${PALETTE[cid % PALETTE.length]}"></span>` +
+          `${groupLabel(cid)} (${n})`;
+        legend.appendChild(li);
+      });
+    }
+    picker.addEventListener("change", () => showCircle(+picker.value));
+    showCircle(0);
+  }
+
+  // ── Section C: feature browser ──────────────────────────────────────
+  const fb = data.featureBrowser;
+  if (fb) {
+    const egoNode = data.egos.find(e => e.id === fb.egoId);
+    document.getElementById("fb-ego-label").textContent = egoNode ? `${egoNode.label} (person ${egoNode.id})` : `person ${fb.egoId}`;
+    document.getElementById("fb-ego-friends").textContent = egoNode ? fmt(egoNode.friends) : "—";
+    document.getElementById("fb-ego-name-inline").textContent = egoNode ? egoNode.label : `person ${fb.egoId}`;
+
+    // Skip categories that don't form meaningful groupings (mostly per-person uniqueness).
+    const SKIP = new Set(["first_name", "last_name", "middle_name", "name"]);
+    const cats = (fb.summary || []).filter(c => !SKIP.has(c.category) && c.groups > 0);
+
+    const chipRow = document.getElementById("fb-chips");
+    cats.forEach((c, i) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.dataset.cat = c.category;
+      chip.innerHTML =
+        `<span>${c.category.replace(/_/g, " ")}</span>` +
+        `<span class="count">${c.groups}</span>`;
+      chip.addEventListener("click", () => activateCategory(c.category));
+      chipRow.appendChild(chip);
+      if (i === 0) chip.classList.add("active");
+    });
+
+    function activateCategory(cat) {
+      document.querySelectorAll("#fb-chips .chip").forEach(el => {
+        el.classList.toggle("active", el.dataset.cat === cat);
+      });
+      const groups = (fb.byCategory[cat] || []).slice(0, 12);
+      document.getElementById("fb-cat-name").textContent = cat.replace(/_/g, " ");
+      document.getElementById("fb-cat-summary").textContent =
+        groups.length ? `${groups.length} distinct values shown · biggest groups first` : "no data for this field";
+      const max = groups.reduce((m, g) => Math.max(m, g.members.length), 0) || 1;
+      const bars = document.getElementById("fb-bars");
+      bars.innerHTML = "";
+      groups.forEach(g => {
+        const row = document.createElement("div");
+        row.className = "fb-bar";
+        const labelText = g.label.replace(/^[^;]+;/, "").replace(/;id$/, "").replace(/;/g, " · ");
+        row.innerHTML =
+          `<span class="label" title="${g.label}">${labelText}</span>` +
+          `<span class="track"><span class="fill" style="width:${(g.members.length / max) * 100}%"></span></span>` +
+          `<span class="v">${fmt(g.members.length)}</span>`;
+        bars.appendChild(row);
+      });
+    }
+    if (cats.length) activateCategory(cats[0].category);
+  }
 })();
 </script>
 </body>
