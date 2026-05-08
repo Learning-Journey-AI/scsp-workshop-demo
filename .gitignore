@@ -1,3 +1,11 @@
 __pycache__/
 .DS_Store
 .claude/
+
+# Workshop prep — private, not part of the public demo repo
+runbook.md
+reference-card.html
+reference-card.pdf
+build_slides.py
+slides-id.txt
+CLAUDE.md
