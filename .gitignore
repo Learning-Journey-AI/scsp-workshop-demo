@@ -1,6 +1,7 @@
 __pycache__/
 .DS_Store
 .claude/
+.venv/
 
 # Workshop prep — private, not part of the public demo repo
 runbook.md

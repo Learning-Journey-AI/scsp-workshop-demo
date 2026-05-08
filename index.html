@@ -12,6 +12,7 @@
   :root {
     --bg: #0b0d12;
     --panel: #12151c;
+    --panel-2: #0e1118;
     --line: #1f2430;
     --text: #e7ecf3;
     --muted: #8892a6;
@@ -22,236 +23,466 @@
   html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .wrap {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 32px 28px 64px;
-  }
-  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 28px; }
-  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-  .sub { color: var(--muted); font-size: 14px; }
-  .sub code { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--accent-2); }
+
+  .wrap { max-width: 1500px; margin: 0 auto; padding: 28px 24px 48px; }
+
+  header { margin-bottom: 22px; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .lede { color: var(--muted); font-size: 15px; max-width: 800px; line-height: 1.5; }
+  .lede strong { color: var(--text); font-weight: 600; }
 
   .layout {
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 20px;
+    grid-template-columns: 1fr 340px;
+    gap: 18px;
+    align-items: start;
   }
-  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 18px;
   }
+  .card-pad { padding: 16px 18px; }
   .card h2 {
-    font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--muted); margin: 0 0 14px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    margin: 0 0 12px;
   }
 
   .graph-card { padding: 0; overflow: hidden; }
   .graph-head {
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
     padding: 14px 18px; border-bottom: 1px solid var(--line);
   }
   .graph-head h2 { margin: 0; }
-  .hint { font-size: 12px; color: var(--muted); }
-  svg { display: block; width: 100%; height: 620px; cursor: grab; }
-  svg:active { cursor: grabbing; }
+  .controls { display: flex; align-items: center; gap: 10px; }
+  .controls input {
+    background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 6px; padding: 6px 10px; font-size: 13px;
+    font-family: inherit; width: 180px;
+  }
+  .controls input::placeholder { color: var(--muted); }
+  .controls button {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 6px; padding: 6px 10px; font-size: 12px; cursor: pointer;
+  }
+  .controls button:hover { color: var(--text); border-color: var(--muted); }
+
+  .canvas-wrap { position: relative; }
+  canvas { display: block; width: 100%; height: 640px; cursor: grab; background: var(--bg); }
+  canvas:active { cursor: grabbing; }
+  .canvas-hint {
+    position: absolute; bottom: 10px; left: 14px;
+    color: var(--muted); font-size: 12px; pointer-events: none;
+    background: rgba(11,13,18,0.7); padding: 4px 8px; border-radius: 4px;
+  }
 
   .legend {
-    display: flex; flex-wrap: wrap; gap: 16px;
+    display: flex; flex-wrap: wrap; gap: 14px;
     padding: 12px 18px; border-top: 1px solid var(--line);
     font-size: 13px;
   }
-  .legend .swatch {
-    display: inline-block; width: 12px; height: 12px; border-radius: 50%;
-    margin-right: 6px; vertical-align: -2px;
-  }
-  .legend .item { color: var(--text); }
+  .legend .swatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
   .legend .item .count { color: var(--muted); margin-left: 4px; font-size: 12px; }
-  .legend-caption {
-    padding: 14px 18px 0;
-    font-size: 13px; color: var(--muted); line-height: 1.5;
-  }
 
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .stat {
-    background: #0e1118; border: 1px solid var(--line); border-radius: 10px;
-    padding: 14px;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px;
   }
-  .stat .v { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text); }
-  .stat .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+  .stat .v { font-size: 20px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .stat .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+  .insight {
+    background: linear-gradient(180deg, rgba(124,196,255,0.06), rgba(124,196,255,0.02));
+    border: 1px solid rgba(124,196,255,0.18);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13.5px; line-height: 1.5;
+    margin-top: 12px;
+  }
+  .insight strong { color: var(--accent); }
 
   ol.top { list-style: none; padding: 0; margin: 0; counter-reset: rank; }
   ol.top li {
     counter-increment: rank;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 4px;
-    border-bottom: 1px solid var(--line);
-    font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 4px; border-bottom: 1px solid var(--line);
+    font-size: 13px; cursor: pointer;
   }
   ol.top li:last-child { border-bottom: none; }
+  ol.top li:hover { background: var(--panel-2); }
   ol.top li::before {
     content: counter(rank);
     color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 11px;
-    width: 22px;
+    width: 16px;
   }
+  ol.top .swatch { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
   ol.top .id { font-family: 'JetBrains Mono', monospace; flex: 1; }
-  ol.top .deg { color: var(--accent-2); font-family: 'JetBrains Mono', monospace; }
+  ol.top .v { color: var(--accent-2); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
 
-  .tooltip {
-    position: absolute; pointer-events: none;
-    background: #0e1118; border: 1px solid var(--line); border-radius: 6px;
-    padding: 6px 10px; font-size: 12px; font-family: 'JetBrains Mono', monospace;
-    color: var(--text); opacity: 0; transition: opacity 0.12s;
-  }
+  .selected-card { display: none; }
+  .selected-card.shown { display: block; }
+  .selected-card h2 { display: flex; justify-content: space-between; align-items: center; }
+  .selected-card .clear { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 11px; }
+  .selected-card .clear:hover { color: var(--text); }
+  .sel-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .sel-row:last-child { border-bottom: none; }
+  .sel-row .k { color: var(--muted); }
+  .sel-row .v { font-family: 'JetBrains Mono', monospace; }
 
-  footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
+  footer { margin-top: 26px; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+  footer .biblio { font-style: italic; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>A Facebook friendship snapshot</h1>
-    <div class="sub">A real social network from Stanford — 4,039 anonymized people and the friendships between them.</div>
+    <div class="lede">
+      The whole friend network of <strong>10 people</strong> on Facebook, mapped together — 4,039 of their friends and the 88,234 friendships between them. Colors mark the natural friend groups the data falls into. Hover any dot to see who someone knows; type a number to find them.
+    </div>
   </header>
 
   <div class="layout">
     <section class="card graph-card">
       <div class="graph-head">
-        <h2>The 200 most-connected people</h2>
-        <div class="hint">drag a dot · scroll to zoom</div>
+        <h2>Everyone in the network</h2>
+        <div class="controls">
+          <input id="search" type="text" inputmode="numeric" placeholder="Find a person ID…" />
+          <button id="reset">Reset view</button>
+        </div>
       </div>
-      <div class="legend-caption">
-        Each dot is a person. Lines between them are friendships. <strong>Color shows which friend group they belong to</strong> — the algorithm finds these groups by looking at who knows who.
+      <div class="canvas-wrap">
+        <canvas id="graph"></canvas>
+        <div class="canvas-hint">drag to pan · scroll to zoom · hover a dot</div>
       </div>
-      <svg id="graph"></svg>
       <div class="legend" id="legend"></div>
     </section>
 
     <aside>
-      <section class="card" style="margin-bottom: 16px;">
+      <section class="card card-pad" style="margin-bottom: 14px;">
         <h2>By the numbers</h2>
         <div class="stat-grid">
-          <div class="stat"><div class="v" id="s-nodes">—</div><div class="k">people</div></div>
-          <div class="stat"><div class="v" id="s-edges">—</div><div class="k">friendships</div></div>
-          <div class="stat"><div class="v" id="s-avg">—</div><div class="k">avg friends per person</div></div>
+          <div class="stat"><div class="v" id="s-people">—</div><div class="k">people</div></div>
+          <div class="stat"><div class="v" id="s-friends">—</div><div class="k">friendships</div></div>
+          <div class="stat"><div class="v" id="s-avg">—</div><div class="k">avg friends</div></div>
           <div class="stat"><div class="v" id="s-max">—</div><div class="k">most friends</div></div>
         </div>
-        <div class="sub" style="font-size: 12px;">Numbers above describe the whole network. The picture on the left shows only the 200 most-connected people and the friendships between them.</div>
+        <div class="insight" id="insight">—</div>
       </section>
 
-      <section class="card">
+      <section class="card card-pad selected-card" id="selected">
+        <h2>
+          <span>Selected: <span id="sel-id" style="font-family:'JetBrains Mono',monospace;color:var(--text)">—</span></span>
+          <button class="clear" id="sel-clear">clear</button>
+        </h2>
+        <div class="sel-row"><span class="k">friends</span><span class="v" id="sel-deg">—</span></div>
+        <div class="sel-row"><span class="k">friend group</span><span class="v" id="sel-group">—</span></div>
+        <div class="sel-row"><span class="k">connecting role</span><span class="v" id="sel-role">—</span></div>
+      </section>
+
+      <section class="card card-pad" style="margin-bottom: 14px;">
         <h2>People with the most friends</h2>
-        <ol class="top" id="top10"></ol>
+        <ol class="top" id="top-friends"></ol>
+      </section>
+
+      <section class="card card-pad">
+        <h2>Bridges between groups</h2>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.5;">
+          People whose friendships connect different groups — remove them and the network would fragment.
+        </div>
+        <ol class="top" id="top-bridges"></ol>
       </section>
     </aside>
   </div>
 
   <footer>
-    Data: <a href="https://snap.stanford.edu/data/ego-Facebook.html">Stanford SNAP</a> · Built live with Claude Code.
+    <div>Source: Stanford SNAP <a href="https://snap.stanford.edu/data/ego-Facebook.html">ego-Facebook</a> dataset, from McAuley &amp; Leskovec, <span class="biblio">"Learning to Discover Social Circles in Ego Networks,"</span> NIPS 2012. Collected via a custom Facebook research app from <strong>10 survey participants</strong> who shared the friendship structure of their friend lists. All identities anonymized; the central user is excluded from each ego network.</div>
+    <div style="margin-top:6px;">Built live with Claude Code at the SCSP AI+ Expo · <a href="https://github.com/Learning-Journey-AI/scsp-workshop-demo">source</a></div>
   </footer>
 </div>
 
-<div class="tooltip" id="tip"></div>
-
 <script>
+const PALETTE = ["#7cc4ff", "#ffb86b", "#9d8cff", "#5cd6a8", "#ff7aa8", "#f5d56e", "#8a93a8", "#c599ff", "#444c5e"];
 const fmt = d3.format(",");
-const tip = document.getElementById("tip");
 
-d3.json("data.json").then(data => {
-  document.getElementById("s-nodes").textContent = fmt(data.stats.nodes);
-  document.getElementById("s-edges").textContent = fmt(data.stats.edges);
-  document.getElementById("s-avg").textContent = data.stats.avgDegree;
-  document.getElementById("s-max").textContent = fmt(data.stats.maxDegree);
+(async function() {
+  const data = await d3.json("data.json");
 
-  const ol = document.getElementById("top10");
-  data.stats.top10.forEach(({id, degree}) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="id">person ${id}</span><span class="deg">${fmt(degree)} friends</span>`;
-    ol.appendChild(li);
-  });
+  // Stats + insight.
+  const s = data.stats;
+  document.getElementById("s-people").textContent = fmt(s.people);
+  document.getElementById("s-friends").textContent = fmt(s.friendships);
+  document.getElementById("s-avg").textContent = s.avgFriends;
+  document.getElementById("s-max").textContent = fmt(s.maxFriends);
+  const pct = (s.maxFriends / s.people * 100).toFixed(1);
+  document.getElementById("insight").innerHTML =
+    `The most-connected person knows <strong>${fmt(s.maxFriends)}</strong> others — about <strong>1 in ${Math.round(s.people / s.maxFriends)}</strong> of everyone in the snapshot.`;
 
-  drawGraph(data.sample);
-});
-
-function drawGraph({nodes, links, communitySizes}) {
-  const svg = d3.select("#graph");
-  const bbox = svg.node().getBoundingClientRect();
-  const width = bbox.width, height = bbox.height;
-
-  const g = svg.append("g");
-
-  svg.call(d3.zoom().scaleExtent([0.2, 6]).on("zoom", (e) => {
-    g.attr("transform", e.transform);
-  }));
-
-  const maxDeg = d3.max(nodes, d => d.subDegree);
-  const r = d3.scaleSqrt().domain([1, maxDeg]).range([2.5, 12]);
-
-  const palette = ["#7cc4ff", "#ffb86b", "#9d8cff", "#5cd6a8", "#ff7aa8", "#f5d56e", "#8a93a8"];
-  const color = c => palette[c % palette.length];
-
+  // Legend.
   const legend = d3.select("#legend");
-  (communitySizes || []).forEach((size, i) => {
+  data.communities.forEach(g => {
     const item = legend.append("span").attr("class", "item");
-    item.append("span").attr("class", "swatch").style("background", color(i));
-    item.append("span").text(`Friend group ${i + 1}`);
-    item.append("span").attr("class", "count").text(`(${size} ${size === 1 ? "person" : "people"})`);
+    item.append("span").attr("class", "swatch").style("background", PALETTE[g.id % PALETTE.length]);
+    const label = g.id === 8 ? "Smaller groups" : `Friend group ${g.id + 1}`;
+    item.append("span").text(label);
+    item.append("span").attr("class", "count").text(`(${fmt(g.size)})`);
   });
 
-  const sim = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(links).id(d => d.id).distance(30).strength(0.3))
-    .force("charge", d3.forceManyBody().strength(-90).distanceMax(280))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("x", d3.forceX(width / 2).strength(0.04))
-    .force("y", d3.forceY(height / 2).strength(0.06))
-    .force("collide", d3.forceCollide().radius(d => r(d.subDegree) + 2))
-    .alpha(0.9).alphaDecay(0.02);
+  // Top lists.
+  const nodeById = new Map(data.nodes.map(n => [n.id, n]));
+  function topRow(item, valFn, valLabel) {
+    const li = document.createElement("li");
+    const c = nodeById.get(item.id)?.c ?? 0;
+    li.dataset.id = item.id;
+    li.innerHTML =
+      `<span class="swatch" style="background:${PALETTE[c % PALETTE.length]}"></span>` +
+      `<span class="id">person ${item.id}</span>` +
+      `<span class="v">${valFn(item)}</span>`;
+    li.addEventListener("click", () => selectNode(item.id, true));
+    return li;
+  }
+  const tf = document.getElementById("top-friends");
+  data.topFriends.forEach(it => tf.appendChild(topRow(it, x => `${fmt(x.deg)} friends`)));
+  const tb = document.getElementById("top-bridges");
+  data.topBridges.forEach(it => tb.appendChild(topRow(it, x => `${fmt(x.deg)} friends`)));
 
-  const link = g.append("g")
-    .attr("stroke", "#2a3142")
-    .attr("stroke-opacity", 0.5)
-    .selectAll("line")
-    .data(links)
-    .join("line")
-    .attr("stroke-width", 0.6);
+  // Adjacency for hover highlights.
+  const adj = new Map();
+  data.nodes.forEach(n => adj.set(n.id, []));
+  for (const [a, b] of data.edges) {
+    const ia = data.nodes[a].id, ib = data.nodes[b].id;
+    adj.get(ia).push(ib);
+    adj.get(ib).push(ia);
+  }
+  const bridgeIds = new Set(data.topBridges.map(b => b.id));
 
-  const node = g.append("g")
-    .selectAll("circle")
-    .data(nodes)
-    .join("circle")
-    .attr("r", d => r(d.subDegree))
-    .attr("fill", d => color(d.community))
-    .attr("stroke", "#0b0d12")
-    .attr("stroke-width", 1)
-    .call(drag(sim))
-    .on("mouseenter", (e, d) => {
-      tip.style.opacity = 1;
-      tip.textContent = `person ${d.id} · ${fmt(d.degree)} friends`;
-    })
-    .on("mousemove", (e) => {
-      tip.style.left = (e.pageX + 12) + "px";
-      tip.style.top = (e.pageY + 12) + "px";
-    })
-    .on("mouseleave", () => { tip.style.opacity = 0; });
+  // Canvas setup with HiDPI scaling.
+  const canvas = document.getElementById("graph");
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  let cssW = 0, cssH = 0;
+  function resize() {
+    const r = canvas.getBoundingClientRect();
+    cssW = r.width; cssH = r.height;
+    canvas.width = cssW * dpr; canvas.height = cssH * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+  window.addEventListener("resize", () => { resize(); fit(); draw(); });
 
-  sim.on("tick", () => {
-    link
-      .attr("x1", d => d.source.x).attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
-    node.attr("cx", d => d.x).attr("cy", d => d.y);
+  // Project layout positions (unit-radius around 0,0) into canvas coords.
+  let view = d3.zoomIdentity;
+  let baseScale = 1, baseX = 0, baseY = 0;
+  function fit() {
+    const margin = 30;
+    const r = Math.min(cssW, cssH) / 2 - margin;
+    baseScale = r;
+    baseX = cssW / 2;
+    baseY = cssH / 2;
+    view = d3.zoomIdentity;
+  }
+  fit();
+
+  // Build a quadtree for fast hover hit-tests in *layout* coords.
+  const tree = d3.quadtree()
+    .x(d => d.x).y(d => d.y)
+    .addAll(data.nodes);
+
+  // Node radius scale.
+  const maxDeg = d3.max(data.nodes, d => d.deg);
+  function radius(d) {
+    const r0 = 1.4 + 2.0 * Math.sqrt(d.deg / maxDeg);  // px in *unit* space
+    return r0;
+  }
+
+  // Hover / selection state.
+  let hover = null;       // currently-hovered node id
+  let selected = null;    // clicked & locked node id
+  let highlightNeighbors = new Set();
+
+  function applyHighlight(id) {
+    highlightNeighbors = new Set();
+    if (id == null) return;
+    highlightNeighbors.add(id);
+    for (const nb of adj.get(id) || []) highlightNeighbors.add(nb);
+  }
+
+  function project(d) {
+    const x = baseX + d.x * baseScale;
+    const y = baseY + d.y * baseScale;
+    return [view.applyX(x), view.applyY(y)];
+  }
+  function unproject(px, py) {
+    const x = view.invertX(px), y = view.invertY(py);
+    return [(x - baseX) / baseScale, (y - baseY) / baseScale];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const dim = highlightNeighbors.size > 0;
+
+    // Draw edges. With 88k edges we batch by alpha to limit state changes.
+    const t = view.k;
+    if (dim) {
+      // Faint pass: edges not touching the highlight.
+      ctx.strokeStyle = "rgba(60, 70, 90, 0.22)";
+      ctx.lineWidth = 0.4;
+      ctx.beginPath();
+      for (const [ia, ib] of data.edges) {
+        const a = data.nodes[ia], b = data.nodes[ib];
+        if (highlightNeighbors.has(a.id) || highlightNeighbors.has(b.id)) continue;
+        const [x1, y1] = project(a), [x2, y2] = project(b);
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      }
+      ctx.stroke();
+      // Bright pass: highlight edges.
+      ctx.strokeStyle = "rgba(255, 184, 107, 0.85)";
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      for (const [ia, ib] of data.edges) {
+        const a = data.nodes[ia], b = data.nodes[ib];
+        if (!(highlightNeighbors.has(a.id) || highlightNeighbors.has(b.id))) continue;
+        const [x1, y1] = project(a), [x2, y2] = project(b);
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      }
+      ctx.stroke();
+    } else {
+      ctx.strokeStyle = "rgba(95, 110, 140, 0.18)";
+      ctx.lineWidth = 0.4;
+      ctx.beginPath();
+      for (const [ia, ib] of data.edges) {
+        const a = data.nodes[ia], b = data.nodes[ib];
+        const [x1, y1] = project(a), [x2, y2] = project(b);
+        ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+      }
+      ctx.stroke();
+    }
+
+    // Draw nodes.
+    for (const n of data.nodes) {
+      const [x, y] = project(n);
+      const r = Math.max(0.8, radius(n) * Math.sqrt(t));
+      const inHi = highlightNeighbors.has(n.id);
+      ctx.fillStyle = dim
+        ? (inHi ? PALETTE[n.c % PALETTE.length] : "rgba(80,90,110,0.35)")
+        : PALETTE[n.c % PALETTE.length];
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      if (bridgeIds.has(n.id)) {
+        ctx.strokeStyle = "rgba(255,255,255,0.8)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+
+    // Selection ring on top.
+    const focusId = selected ?? hover;
+    if (focusId != null) {
+      const n = nodeById.get(focusId);
+      if (n) {
+        const [x, y] = project(n);
+        const r = Math.max(4, radius(n) * Math.sqrt(t) + 3);
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Hover handling — debounce via requestAnimationFrame.
+  let rafQueued = false;
+  function queueDraw() {
+    if (rafQueued) return;
+    rafQueued = true;
+    requestAnimationFrame(() => { rafQueued = false; draw(); });
+  }
+  canvas.addEventListener("mousemove", (e) => {
+    if (selected != null) return;  // hover doesn't override a click-lock
+    const rect = canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    const [lx, ly] = unproject(px, py);
+    const found = tree.find(lx, ly, 0.025 / view.k);
+    const nh = found ? found.id : null;
+    if (nh !== hover) {
+      hover = nh;
+      applyHighlight(hover);
+      canvas.style.cursor = hover != null ? "pointer" : "grab";
+      queueDraw();
+    }
   });
-}
+  canvas.addEventListener("mouseleave", () => {
+    if (selected == null) { hover = null; applyHighlight(null); queueDraw(); }
+  });
+  canvas.addEventListener("click", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    const [lx, ly] = unproject(px, py);
+    const found = tree.find(lx, ly, 0.025 / view.k);
+    if (found) selectNode(found.id, false);
+    else clearSelection();
+  });
 
-function drag(sim) {
-  return d3.drag()
-    .on("start", (e, d) => { if (!e.active) sim.alphaTarget(0.2).restart(); d.fx = d.x; d.fy = d.y; })
-    .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
-    .on("end", (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; });
-}
+  function selectNode(id, fromList) {
+    selected = id;
+    hover = id;
+    applyHighlight(id);
+    const n = nodeById.get(id);
+    if (n) {
+      document.getElementById("sel-id").textContent = id;
+      document.getElementById("sel-deg").textContent = `${fmt(n.deg)}`;
+      const groupLabel = n.c === 8 ? "smaller group" : `group ${n.c + 1}`;
+      document.getElementById("sel-group").textContent = groupLabel;
+      const isBridge = bridgeIds.has(id);
+      document.getElementById("sel-role").textContent = isBridge ? "bridge between groups" : "—";
+      document.getElementById("selected").classList.add("shown");
+      if (fromList) {
+        // Zoom to node when selected from the list.
+        const targetK = 4;
+        const [px0, py0] = [baseX + n.x * baseScale, baseY + n.y * baseScale];
+        view = d3.zoomIdentity.translate(cssW/2 - px0*targetK, cssH/2 - py0*targetK).scale(targetK);
+        d3.select(canvas).call(zoom.transform, view);
+      }
+    }
+    queueDraw();
+  }
+  function clearSelection() {
+    selected = null;
+    hover = null;
+    applyHighlight(null);
+    document.getElementById("selected").classList.remove("shown");
+    queueDraw();
+  }
+  document.getElementById("sel-clear").addEventListener("click", clearSelection);
+  document.getElementById("reset").addEventListener("click", () => {
+    fit();
+    d3.select(canvas).call(zoom.transform, d3.zoomIdentity);
+    clearSelection();
+  });
+
+  // Search.
+  document.getElementById("search").addEventListener("change", (e) => {
+    const v = e.target.value.trim();
+    if (!v) return;
+    const id = parseInt(v, 10);
+    if (Number.isFinite(id) && nodeById.has(id)) selectNode(id, true);
+  });
+
+  // d3-zoom for pan + zoom.
+  const zoom = d3.zoom()
+    .scaleExtent([0.5, 20])
+    .on("zoom", (e) => { view = e.transform; queueDraw(); });
+  d3.select(canvas).call(zoom);
+
+  draw();
+})();
 </script>
 </body>
 </html>
