@@ -1,4 +1,4 @@
-import gzip, json
+import gzip, json, random
 from collections import Counter, defaultdict
 
 edges_full = []
@@ -32,8 +32,45 @@ for a, b in sub_edges:
 visible = {n for n in top_nodes if sub_deg[n] > 0}
 sub_edges = [(a, b) for a, b in sub_edges if a in visible and b in visible]
 
+adj = defaultdict(set)
+for a, b in sub_edges:
+    adj[a].add(b)
+    adj[b].add(a)
+
+# Label propagation on the sampled subgraph — vanilla Python, deterministic seed.
+random.seed(42)
+labels = {n: i for i, n in enumerate(visible)}
+order = list(visible)
+for _ in range(30):
+    random.shuffle(order)
+    changed = 0
+    for n in order:
+        if not adj[n]:
+            continue
+        counts = Counter(labels[m] for m in adj[n])
+        top = max(counts.values())
+        winners = [lbl for lbl, c in counts.items() if c == top]
+        new_label = min(winners)
+        if new_label != labels[n]:
+            labels[n] = new_label
+            changed += 1
+    if changed == 0:
+        break
+
+# Re-index communities so the largest is 0, next is 1, etc. — for stable color mapping.
+size_by_label = Counter(labels.values())
+ordered_labels = [lbl for lbl, _ in size_by_label.most_common()]
+remap = {old: new for new, old in enumerate(ordered_labels)}
+community = {n: remap[labels[n]] for n in visible}
+
+# Group anything past the top 6 communities into "other" so the legend stays readable.
+TOP_C = 6
+def cap(c): return c if c < TOP_C else TOP_C
+community_capped = {n: cap(community[n]) for n in visible}
+community_sizes = Counter(community_capped.values())
+
 nodes = [
-    {"id": str(n), "degree": degree[n], "subDegree": sub_deg[n]}
+    {"id": str(n), "degree": degree[n], "subDegree": sub_deg[n], "community": community_capped[n]}
     for n in visible
 ]
 links = [{"source": str(a), "target": str(b)} for a, b in sub_edges]
@@ -50,6 +87,7 @@ data = {
         "k": K,
         "nodes": nodes,
         "links": links,
+        "communitySizes": [community_sizes[i] for i in range(min(TOP_C + 1, len(community_sizes)))],
     },
 }
 

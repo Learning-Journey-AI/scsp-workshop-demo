@@ -56,9 +56,25 @@
     padding: 14px 18px; border-bottom: 1px solid var(--line);
   }
   .graph-head h2 { margin: 0; }
-  .legend { font-size: 12px; color: var(--muted); }
+  .hint { font-size: 12px; color: var(--muted); }
   svg { display: block; width: 100%; height: 620px; cursor: grab; }
   svg:active { cursor: grabbing; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    padding: 12px 18px; border-top: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .legend .swatch {
+    display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+    margin-right: 6px; vertical-align: -2px;
+  }
+  .legend .item { color: var(--text); }
+  .legend .item .count { color: var(--muted); margin-left: 4px; font-size: 12px; }
+  .legend-caption {
+    padding: 14px 18px 0;
+    font-size: 13px; color: var(--muted); line-height: 1.5;
+  }
 
   .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
   .stat {
@@ -106,9 +122,13 @@
     <section class="card graph-card">
       <div class="graph-head">
         <h2>The 200 most-connected people</h2>
-        <div class="legend">drag a dot · scroll to zoom</div>
+        <div class="hint">drag a dot · scroll to zoom</div>
+      </div>
+      <div class="legend-caption">
+        Each dot is a person. Lines between them are friendships. <strong>Color shows which friend group they belong to</strong> — the algorithm finds these groups by looking at who knows who.
       </div>
       <svg id="graph"></svg>
+      <div class="legend" id="legend"></div>
     </section>
 
     <aside>
@@ -157,7 +177,7 @@ d3.json("data.json").then(data => {
   drawGraph(data.sample);
 });
 
-function drawGraph({nodes, links}) {
+function drawGraph({nodes, links, communitySizes}) {
   const svg = d3.select("#graph");
   const bbox = svg.node().getBoundingClientRect();
   const width = bbox.width, height = bbox.height;
@@ -170,13 +190,24 @@ function drawGraph({nodes, links}) {
 
   const maxDeg = d3.max(nodes, d => d.subDegree);
   const r = d3.scaleSqrt().domain([1, maxDeg]).range([2.5, 12]);
-  const color = d3.scaleSequential(d3.interpolateCool).domain([0, maxDeg]);
+
+  const palette = ["#7cc4ff", "#ffb86b", "#9d8cff", "#5cd6a8", "#ff7aa8", "#f5d56e", "#8a93a8"];
+  const color = c => palette[c % palette.length];
+
+  const legend = d3.select("#legend");
+  (communitySizes || []).forEach((size, i) => {
+    const item = legend.append("span").attr("class", "item");
+    item.append("span").attr("class", "swatch").style("background", color(i));
+    item.append("span").text(`Friend group ${i + 1}`);
+    item.append("span").attr("class", "count").text(`(${size} ${size === 1 ? "person" : "people"})`);
+  });
 
   const sim = d3.forceSimulation(nodes)
     .force("link", d3.forceLink(links).id(d => d.id).distance(30).strength(0.3))
     .force("charge", d3.forceManyBody().strength(-90).distanceMax(280))
-    .force("x", d3.forceX(width / 2).strength(0.06))
-    .force("y", d3.forceY(height / 2).strength(0.08))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("x", d3.forceX(width / 2).strength(0.04))
+    .force("y", d3.forceY(height / 2).strength(0.06))
     .force("collide", d3.forceCollide().radius(d => r(d.subDegree) + 2))
     .alpha(0.9).alphaDecay(0.02);
 
@@ -193,7 +224,7 @@ function drawGraph({nodes, links}) {
     .data(nodes)
     .join("circle")
     .attr("r", d => r(d.subDegree))
-    .attr("fill", d => color(d.subDegree))
+    .attr("fill", d => color(d.community))
     .attr("stroke", "#0b0d12")
     .attr("stroke-width", 1)
     .call(drag(sim))
